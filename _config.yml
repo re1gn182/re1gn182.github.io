@@ -1,7 +1,7 @@
 title: re1gn
 email: ""
 description: >-
-  Personal site for project writeups, notes, and builds.
+  Personal site for project writeups, rants, and builds.
 baseurl: ""
 url: "https://re1gn182.github.io"
 markdown: kramdown

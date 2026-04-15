@@ -14,6 +14,8 @@
       --accent-2: #22d3ee;
       --border: rgba(255,255,255,0.14);
       --shadow: 0 20px 60px rgba(0,0,0,0.35);
+      --danger: #ff6b81;
+      --ok: #7ef29a;
     }
 
     * { box-sizing: border-box; }
@@ -89,7 +91,8 @@
       letter-spacing: 0.05em;
     }
 
-    .home-btn {
+    .home-btn,
+    .btn {
       display: inline-flex;
       align-items: center;
       justify-content: center;
@@ -101,12 +104,20 @@
       text-decoration: none;
       font-weight: 600;
       transition: transform 180ms ease, border-color 180ms ease, background 180ms ease;
+      cursor: pointer;
     }
 
-    .home-btn:hover {
+    .home-btn:hover,
+    .btn:hover {
       transform: translateY(-2px);
       border-color: rgba(255,255,255,0.22);
       background: rgba(255,255,255,0.09);
+    }
+
+    .btn.primary {
+      background: linear-gradient(135deg, rgba(124,58,237,0.85), rgba(34,211,238,0.78));
+      box-shadow: 0 10px 30px rgba(64, 70, 229, 0.28);
+      border: none;
     }
 
     .hero,
@@ -156,7 +167,7 @@
     }
 
     .subtitle {
-      max-width: 760px;
+      max-width: 780px;
       font-size: 1.05rem;
       line-height: 1.75;
       color: var(--muted);
@@ -183,14 +194,16 @@
     .login-box,
     .composer,
     .post-card,
-    .info-box {
+    .info-box,
+    .mod-box {
       background: rgba(255,255,255,0.05);
       border: 1px solid rgba(255,255,255,0.08);
       border-radius: 18px;
     }
 
     .login-box,
-    .composer {
+    .composer,
+    .mod-box {
       padding: 18px;
       margin-bottom: 16px;
     }
@@ -234,32 +247,6 @@
       flex-wrap: wrap;
     }
 
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      padding: 12px 16px;
-      border-radius: 14px;
-      border: 1px solid rgba(255,255,255,0.14);
-      text-decoration: none;
-      color: var(--text);
-      background: rgba(255,255,255,0.06);
-      font-weight: 600;
-      cursor: pointer;
-      transition: transform 180ms ease, border-color 180ms ease, background 180ms ease;
-    }
-
-    .btn.primary {
-      background: linear-gradient(135deg, rgba(124,58,237,0.85), rgba(34,211,238,0.78));
-      box-shadow: 0 10px 30px rgba(64, 70, 229, 0.28);
-      border: none;
-    }
-
-    .btn:hover {
-      transform: translateY(-2px);
-      border-color: rgba(255,255,255,0.22);
-    }
-
     .status {
       color: var(--muted);
       font-size: 0.95rem;
@@ -274,6 +261,7 @@
     .post-card {
       padding: 18px;
       transition: transform 180ms ease, background 180ms ease;
+      position: relative;
     }
 
     .post-card:hover {
@@ -305,6 +293,28 @@
       color: #dbe3ff;
       white-space: pre-wrap;
       word-break: break-word;
+      padding-right: 56px;
+    }
+
+    .delete-btn {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.06);
+      color: var(--danger);
+      border-radius: 12px;
+      padding: 8px 10px;
+      cursor: pointer;
+      display: none;
+    }
+
+    .delete-btn:hover {
+      background: rgba(255,107,129,0.12);
+    }
+
+    .is-owner .delete-btn {
+      display: inline-flex;
     }
 
     .info-stack {
@@ -338,6 +348,9 @@
       line-height: 1.7;
     }
 
+    .good { color: var(--ok); }
+    .bad { color: var(--danger); }
+
     @keyframes shimmer {
       0% { background-position: 0% 50%; }
       100% { background-position: 240% 50%; }
@@ -359,14 +372,10 @@
     }
 
     @media (max-width: 920px) {
-      .layout {
-        grid-template-columns: 1fr;
-      }
-
-      .hero,
-      .panel {
-        padding: 20px;
-      }
+      .layout { grid-template-columns: 1fr; }
+      .hero, .panel { padding: 20px; }
+      .message { padding-right: 0; }
+      .delete-btn { position: static; margin-top: 12px; }
     }
   </style>
 </head>
@@ -383,7 +392,7 @@
     <section class="hero">
       <h1><span class="gradient-text">message board</span></h1>
       <p class="subtitle">
-        Drop a message, leave a thought, or just say hi. Pick a username first, then post. Everything here is front-end only and meant for a lightweight GitHub Pages setup.
+        Real shared posts with Firebase. Pick a username, drop a message, and everyone visiting the page will see the same board.
       </p>
     </section>
 
@@ -405,8 +414,7 @@
           <textarea id="message" maxlength="500" placeholder="type your message here..."></textarea>
           <div class="row">
             <button class="btn primary" id="postBtn">post message</button>
-            <button class="btn" id="clearBtn">clear board</button>
-            <span class="status" id="postStatus">messages are saved in your browser</span>
+            <span class="status" id="postStatus">connecting...</span>
           </div>
         </div>
 
@@ -424,71 +432,75 @@
             <span>discord</span>
             <strong>itsre1gning</strong>
           </div>
-          <div class="info-box">
-            <span>how it works</span>
-            <div class="tiny">This version works on GitHub Pages with no backend. Posts are stored with localStorage, so they persist on the same browser and device, but they are not shared globally with everyone on the internet.</div>
+          <div class="mod-box">
+            <label for="ownerPassword">owner delete password</label>
+            <input id="ownerPassword" type="password" placeholder="enter owner password to delete posts" />
+            <div class="row">
+              <button class="btn" id="ownerLoginBtn">unlock delete</button>
+              <span class="status" id="ownerStatus">delete locked</span>
+            </div>
           </div>
           <div class="info-box">
-            <span>real public board?</span>
-            <div class="tiny">For a true shared board, you’d need a backend like Firebase, Supabase, or a small server API.</div>
+            <span>firebase setup</span>
+            <div class="tiny">Paste your Firebase config into the script near the bottom. Then enable Firestore in your Firebase project.</div>
+          </div>
+          <div class="info-box">
+            <span>firestore rules</span>
+            <div class="tiny">Use basic public write rules only if you’re okay with anyone posting. For tighter control later, add auth or rate limits.</div>
           </div>
         </div>
       </aside>
     </section>
   </main>
 
-  <script>
-    const canvas = document.getElementById('bg');
-    const ctx = canvas.getContext('2d');
-    const postsEl = document.getElementById('posts');
-    const usernameEl = document.getElementById('username');
-    const messageEl = document.getElementById('message');
-    const userStatusEl = document.getElementById('userStatus');
-    const postStatusEl = document.getElementById('postStatus');
-    const saveUserBtn = document.getElementById('saveUserBtn');
-    const postBtn = document.getElementById('postBtn');
-    const clearBtn = document.getElementById('clearBtn');
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+    import {
+      getFirestore,
+      collection,
+      addDoc,
+      deleteDoc,
+      doc,
+      serverTimestamp,
+      query,
+      orderBy,
+      onSnapshot
+    } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 
-    const STORAGE_KEY = 're1gn_message_board_posts';
-    const USER_KEY = 're1gn_message_board_username';
+    const firebaseConfig = {
+      apiKey: "PASTE_YOUR_API_KEY",
+      authDomain: "PASTE_YOUR_AUTH_DOMAIN",
+      projectId: "PASTE_YOUR_PROJECT_ID",
+      storageBucket: "PASTE_YOUR_STORAGE_BUCKET",
+      messagingSenderId: "PASTE_YOUR_MESSAGING_SENDER_ID",
+      appId: "PASTE_YOUR_APP_ID"
+    };
+
+    const OWNER_PASSWORD = "!124321889078sxz#@$#";
+    const USER_KEY = "re1gn_firebase_username";
+    const OWNER_KEY = "re1gn_owner_mode";
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    const postsEl = document.getElementById("posts");
+    const usernameEl = document.getElementById("username");
+    const messageEl = document.getElementById("message");
+    const userStatusEl = document.getElementById("userStatus");
+    const postStatusEl = document.getElementById("postStatus");
+    const saveUserBtn = document.getElementById("saveUserBtn");
+    const postBtn = document.getElementById("postBtn");
+    const ownerPasswordEl = document.getElementById("ownerPassword");
+    const ownerLoginBtn = document.getElementById("ownerLoginBtn");
+    const ownerStatusEl = document.getElementById("ownerStatus");
 
     function escapeHtml(text) {
-      return text
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#039;');
-    }
-
-    function getPosts() {
-      try {
-        return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
-      } catch {
-        return [];
-      }
-    }
-
-    function savePosts(posts) {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(posts));
-    }
-
-    function renderPosts() {
-      const posts = getPosts().slice().reverse();
-      if (!posts.length) {
-        postsEl.innerHTML = '<div class="empty">no posts yet. be the first one.</div>';
-        return;
-      }
-
-      postsEl.innerHTML = posts.map((post) => `
-        <article class="post-card">
-          <div class="post-head">
-            <div class="username">@${escapeHtml(post.username)}</div>
-            <div class="timestamp">${escapeHtml(post.time)}</div>
-          </div>
-          <div class="message">${escapeHtml(post.message)}</div>
-        </article>
-      `).join('');
+      return String(text)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/\"/g, "&quot;")
+        .replace(/'/g, "&#039;");
     }
 
     function updateUserStatus() {
@@ -497,65 +509,146 @@
         usernameEl.value = savedUser;
         userStatusEl.textContent = `posting as @${savedUser}`;
       } else {
-        userStatusEl.textContent = 'no username set yet';
+        userStatusEl.textContent = "no username set yet";
       }
     }
 
-    saveUserBtn.addEventListener('click', () => {
-      const name = usernameEl.value.trim();
-      if (!name) {
-        userStatusEl.textContent = 'enter a username first';
+    function updateOwnerStatus() {
+      const ownerEnabled = localStorage.getItem(OWNER_KEY) === "true";
+      ownerStatusEl.textContent = ownerEnabled ? "delete unlocked" : "delete locked";
+      ownerStatusEl.className = `status ${ownerEnabled ? 'good' : ''}`;
+    }
+
+    function formatTime(timestamp) {
+      if (!timestamp?.toDate) return "just now";
+      return timestamp.toDate().toLocaleString();
+    }
+
+    function renderPosts(docs) {
+      const ownerEnabled = localStorage.getItem(OWNER_KEY) === "true";
+      if (!docs.length) {
+        postsEl.innerHTML = '<div class="empty">no posts yet. be the first one.</div>';
         return;
       }
-      localStorage.setItem(USER_KEY, name.slice(0, 24));
+
+      postsEl.innerHTML = docs.map((item) => {
+        const data = item.data();
+        return `
+          <article class="post-card ${ownerEnabled ? 'is-owner' : ''}">
+            <div class="post-head">
+              <div class="username">@${escapeHtml(data.username || 'unknown')}</div>
+              <div class="timestamp">${escapeHtml(formatTime(data.createdAt))}</div>
+            </div>
+            <div class="message">${escapeHtml(data.message || '')}</div>
+            <button class="delete-btn" data-id="${item.id}">delete</button>
+          </article>
+        `;
+      }).join("");
+
+      if (ownerEnabled) {
+        document.querySelectorAll(".delete-btn").forEach((btn) => {
+          btn.addEventListener("click", async () => {
+            const postId = btn.dataset.id;
+            const sure = confirm("Delete this post?");
+            if (!sure) return;
+            try {
+              await deleteDoc(doc(db, "posts", postId));
+            } catch (error) {
+              postStatusEl.textContent = `delete failed: ${error.message}`;
+              postStatusEl.className = "status bad";
+            }
+          });
+        });
+      }
+    }
+
+    saveUserBtn.addEventListener("click", () => {
+      const name = usernameEl.value.trim().slice(0, 24);
+      if (!name) {
+        userStatusEl.textContent = "enter a username first";
+        return;
+      }
+      localStorage.setItem(USER_KEY, name);
       updateUserStatus();
-      postStatusEl.textContent = 'username saved';
+      postStatusEl.textContent = "username saved";
+      postStatusEl.className = "status good";
     });
 
-    postBtn.addEventListener('click', () => {
-      const username = (localStorage.getItem(USER_KEY) || usernameEl.value).trim();
-      const message = messageEl.value.trim();
+    ownerLoginBtn.addEventListener("click", () => {
+      const pw = ownerPasswordEl.value;
+      if (pw === OWNER_PASSWORD) {
+        localStorage.setItem(OWNER_KEY, "true");
+        ownerPasswordEl.value = "";
+        updateOwnerStatus();
+        postStatusEl.textContent = "owner delete unlocked";
+        postStatusEl.className = "status good";
+      } else {
+        localStorage.removeItem(OWNER_KEY);
+        updateOwnerStatus();
+        postStatusEl.textContent = "wrong owner password";
+        postStatusEl.className = "status bad";
+      }
+    });
+
+    postBtn.addEventListener("click", async () => {
+      const username = (localStorage.getItem(USER_KEY) || usernameEl.value).trim().slice(0, 24);
+      const message = messageEl.value.trim().slice(0, 500);
 
       if (!username) {
-        postStatusEl.textContent = 'set a username before posting';
+        postStatusEl.textContent = "set a username before posting";
+        postStatusEl.className = "status bad";
         return;
       }
 
       if (!message) {
-        postStatusEl.textContent = 'type a message first';
+        postStatusEl.textContent = "type a message first";
+        postStatusEl.className = "status bad";
         return;
       }
 
-      localStorage.setItem(USER_KEY, username.slice(0, 24));
-      const posts = getPosts();
-      posts.push({
-        username: username.slice(0, 24),
-        message: message.slice(0, 500),
-        time: new Date().toLocaleString()
-      });
-      savePosts(posts);
-      messageEl.value = '';
-      updateUserStatus();
-      renderPosts();
-      postStatusEl.textContent = 'message posted';
+      try {
+        localStorage.setItem(USER_KEY, username);
+        await addDoc(collection(db, "posts"), {
+          username,
+          message,
+          createdAt: serverTimestamp()
+        });
+        messageEl.value = "";
+        updateUserStatus();
+        postStatusEl.textContent = "message posted";
+        postStatusEl.className = "status good";
+      } catch (error) {
+        postStatusEl.textContent = `post failed: ${error.message}`;
+        postStatusEl.className = "status bad";
+      }
     });
 
-    clearBtn.addEventListener('click', () => {
-      const confirmed = confirm('Clear all saved messages on this browser?');
-      if (!confirmed) return;
-      localStorage.removeItem(STORAGE_KEY);
-      renderPosts();
-      postStatusEl.textContent = 'board cleared on this browser';
+    const q = query(collection(db, "posts"), orderBy("createdAt", "desc"));
+    onSnapshot(q, (snapshot) => {
+      renderPosts(snapshot.docs);
+      if (!snapshot.empty) {
+        postStatusEl.textContent = "connected to firebase";
+        postStatusEl.className = "status good";
+      }
+    }, (error) => {
+      postsEl.innerHTML = `<div class="empty">firebase error: ${escapeHtml(error.message)}</div>`;
+      postStatusEl.textContent = "firebase connection failed";
+      postStatusEl.className = "status bad";
     });
 
+    updateUserStatus();
+    updateOwnerStatus();
+
+    const canvas = document.getElementById("bg");
+    const ctx = canvas.getContext("2d");
     let particles = [];
     const pointer = { x: window.innerWidth / 2, y: window.innerHeight / 2, radius: 150 };
 
     function resize() {
       canvas.width = window.innerWidth * devicePixelRatio;
       canvas.height = window.innerHeight * devicePixelRatio;
-      canvas.style.width = window.innerWidth + 'px';
-      canvas.style.height = window.innerHeight + 'px';
+      canvas.style.width = window.innerWidth + "px";
+      canvas.style.height = window.innerHeight + "px";
       ctx.setTransform(devicePixelRatio, 0, 0, devicePixelRatio, 0, 0);
       createParticles();
     }
@@ -583,9 +676,9 @@
 
     function drawGlow() {
       const g = ctx.createRadialGradient(pointer.x, pointer.y, 0, pointer.x, pointer.y, 250);
-      g.addColorStop(0, 'rgba(124, 58, 237, 0.16)');
-      g.addColorStop(0.45, 'rgba(34, 211, 238, 0.1)');
-      g.addColorStop(1, 'rgba(0, 0, 0, 0)');
+      g.addColorStop(0, "rgba(124, 58, 237, 0.16)");
+      g.addColorStop(0.45, "rgba(34, 211, 238, 0.1)");
+      g.addColorStop(1, "rgba(0, 0, 0, 0)");
       ctx.fillStyle = g;
       ctx.beginPath();
       ctx.arc(pointer.x, pointer.y, 250, 0, Math.PI * 2);
@@ -609,7 +702,7 @@
           p.y -= dy * 0.006;
         }
         ctx.beginPath();
-        ctx.fillStyle = d < pointer.radius ? 'rgba(255,255,255,0.95)' : 'rgba(173, 194, 255, 0.72)';
+        ctx.fillStyle = d < pointer.radius ? "rgba(255,255,255,0.95)" : "rgba(173, 194, 255, 0.72)";
         ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
         ctx.fill();
         for (let j = i + 1; j < particles.length; j++) {
@@ -623,21 +716,19 @@
       requestAnimationFrame(animate);
     }
 
-    window.addEventListener('mousemove', (e) => {
+    window.addEventListener("mousemove", (e) => {
       pointer.x = e.clientX;
       pointer.y = e.clientY + window.scrollY;
     });
 
-    window.addEventListener('touchmove', (e) => {
+    window.addEventListener("touchmove", (e) => {
       const touch = e.touches[0];
       if (!touch) return;
       pointer.x = touch.clientX;
       pointer.y = touch.clientY + window.scrollY;
     }, { passive: true });
 
-    window.addEventListener('resize', resize);
-    updateUserStatus();
-    renderPosts();
+    window.addEventListener("resize", resize);
     resize();
     animate();
   </script>

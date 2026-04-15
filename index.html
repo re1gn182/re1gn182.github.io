@@ -353,15 +353,13 @@
       <div class="orb one"></div>
       <div class="orb two"></div>
 
-      <div class="badge">
-        <span class="dot"></span>
-        personal site / digital space
-      </div>
+      
 
-      <h1><span class="gradient-text">ra1ne</span></h1>
+      <h1><span class="gradient-text">RyomenKingsfall</span></h1>
 
       <p class="subtitle">
-        Building cool things, breaking old things, welcome to my RAM hungry website!
+        Building cool things, breaking boring ones, and turning ideas into something that actually feels alive.
+        Welcome to my corner of the internet.
       </p>
 
       <div class="actions">
@@ -369,11 +367,7 @@
         <a class="btn secondary" href="#">View Projects</a>
       </div>
 
-      <div class="meta">
-        <div class="tile">
-          <span>focus</span>
-          <strong>creative code</strong>
-        </div>
+      
         <div class="tile">
           <span>style</span>
           <strong>clean + reactive</strong>
@@ -413,4 +407,101 @@
 
     function createParticles() {
       const count = Math.min(120, Math.floor((window.innerWidth * window.innerHeight) / 12000));
-      particles = Array.from({ length: count }, ()
+      particles = Array.from({ length: count }, () => ({
+        x: Math.random() * window.innerWidth,
+        y: Math.random() * window.innerHeight,
+        vx: (Math.random() - 0.5) * 0.45,
+        vy: (Math.random() - 0.5) * 0.45,
+        size: Math.random() * 2.4 + 0.8
+      }));
+    }
+
+    function drawBackgroundGlow() {
+      const g = ctx.createRadialGradient(pointer.x, pointer.y, 0, pointer.x, pointer.y, 280);
+      g.addColorStop(0, 'rgba(124, 58, 237, 0.18)');
+      g.addColorStop(0.45, 'rgba(34, 211, 238, 0.12)');
+      g.addColorStop(1, 'rgba(0, 0, 0, 0)');
+      ctx.fillStyle = g;
+      ctx.beginPath();
+      ctx.arc(pointer.x, pointer.y, 280, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    function connect(a, b, dist) {
+      if (dist > 130) return;
+      ctx.strokeStyle = `rgba(170, 190, 255, ${0.12 - dist / 1400})`;
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(a.x, a.y);
+      ctx.lineTo(b.x, b.y);
+      ctx.stroke();
+    }
+
+    function animate() {
+      ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+      drawBackgroundGlow();
+
+      for (let i = 0; i < particles.length; i++) {
+        const p = particles[i];
+        p.x += p.vx;
+        p.y += p.vy;
+
+        if (p.x < 0 || p.x > window.innerWidth) p.vx *= -1;
+        if (p.y < 0 || p.y > window.innerHeight) p.vy *= -1;
+
+        const dx = pointer.x - p.x;
+        const dy = pointer.y - p.y;
+        const d = Math.sqrt(dx * dx + dy * dy);
+
+        if (d < pointer.radius) {
+          p.x -= dx * 0.008;
+          p.y -= dy * 0.008;
+        }
+
+        ctx.beginPath();
+        ctx.fillStyle = d < pointer.radius
+          ? 'rgba(255,255,255,0.95)'
+          : 'rgba(173, 194, 255, 0.72)';
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx.fill();
+
+        for (let j = i + 1; j < particles.length; j++) {
+          const q = particles[j];
+          const qx = p.x - q.x;
+          const qy = p.y - q.y;
+          const dist = Math.sqrt(qx * qx + qy * qy);
+          connect(p, q, dist);
+        }
+      }
+
+      requestAnimationFrame(animate);
+    }
+
+    window.addEventListener('mousemove', (e) => {
+      pointer.x = e.clientX;
+      pointer.y = e.clientY;
+
+      const x = (e.clientX / window.innerWidth - 0.5) * 10;
+      const y = (e.clientY / window.innerHeight - 0.5) * -10;
+      hero.style.transform = `rotateX(${y}deg) rotateY(${x}deg) translateY(-4px)`;
+    });
+
+    window.addEventListener('mouseleave', () => {
+      hero.style.transform = 'rotateX(0deg) rotateY(0deg) translateY(0px)';
+    });
+
+    window.addEventListener('touchmove', (e) => {
+      const touch = e.touches[0];
+      if (!touch) return;
+      pointer.x = touch.clientX;
+      pointer.y = touch.clientY;
+    }, { passive: true });
+
+    window.addEventListener('resize', resize);
+
+    resize();
+    animate();
+  </script>
+</body>
+</html>
+

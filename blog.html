@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>re1gn | blog</title>
+  <title>re1gn | message board</title>
   <style>
     :root {
       --bg: #050816;
@@ -12,25 +12,22 @@
       --muted: #9aa4c7;
       --accent: #7c3aed;
       --accent-2: #22d3ee;
-      --glass: rgba(255, 255, 255, 0.08);
-      --border: rgba(255, 255, 255, 0.14);
-      --shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+      --border: rgba(255,255,255,0.14);
+      --shadow: 0 20px 60px rgba(0,0,0,0.35);
     }
 
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     html, body {
       margin: 0;
       min-height: 100%;
       font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--text);
       background:
         radial-gradient(circle at 20% 20%, rgba(124, 58, 237, 0.18), transparent 28%),
         radial-gradient(circle at 80% 30%, rgba(34, 211, 238, 0.15), transparent 32%),
         radial-gradient(circle at 50% 80%, rgba(59, 130, 246, 0.12), transparent 30%),
         linear-gradient(135deg, var(--bg), #04050d 45%, var(--bg-soft));
-      color: var(--text);
       overflow-x: hidden;
     }
 
@@ -71,9 +68,9 @@
     .wrap {
       position: relative;
       z-index: 2;
-      width: min(1100px, calc(100% - 32px));
+      width: min(1120px, calc(100% - 32px));
       margin: 0 auto;
-      padding: 34px 0 60px;
+      padding: 32px 0 48px;
     }
 
     .topbar {
@@ -81,17 +78,15 @@
       justify-content: space-between;
       align-items: center;
       gap: 16px;
-      margin-bottom: 24px;
+      margin-bottom: 22px;
       animation: fadeUp 0.9s ease both;
     }
 
     .brand {
-      font-size: 1.05rem;
-      font-weight: 700;
-      letter-spacing: 0.04em;
-      text-decoration: none;
       color: var(--text);
-      opacity: 0.95;
+      text-decoration: none;
+      font-weight: 700;
+      letter-spacing: 0.05em;
     }
 
     .home-btn {
@@ -102,8 +97,8 @@
       border-radius: 14px;
       border: 1px solid rgba(255,255,255,0.14);
       background: rgba(255,255,255,0.06);
-      text-decoration: none;
       color: var(--text);
+      text-decoration: none;
       font-weight: 600;
       transition: transform 180ms ease, border-color 180ms ease, background 180ms ease;
     }
@@ -114,17 +109,21 @@
       background: rgba(255,255,255,0.09);
     }
 
-    .hero {
-      padding: 34px;
+    .hero,
+    .panel {
       border-radius: 28px;
       background: linear-gradient(180deg, rgba(255,255,255,0.12), rgba(255,255,255,0.06));
       border: 1px solid var(--border);
       box-shadow: var(--shadow);
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
+    }
+
+    .hero {
+      padding: 34px;
+      margin-bottom: 22px;
       position: relative;
       overflow: hidden;
-      margin-bottom: 22px;
       animation: fadeUp 1s 0.1s ease both;
     }
 
@@ -141,7 +140,7 @@
 
     h1 {
       margin: 0 0 14px;
-      font-size: clamp(2.4rem, 7vw, 5.3rem);
+      font-size: clamp(2.6rem, 8vw, 5.8rem);
       line-height: 0.95;
       letter-spacing: -0.06em;
     }
@@ -157,108 +156,186 @@
     }
 
     .subtitle {
-      max-width: 780px;
-      font-size: 1.08rem;
-      line-height: 1.7;
+      max-width: 760px;
+      font-size: 1.05rem;
+      line-height: 1.75;
       color: var(--muted);
       margin: 0;
     }
 
-    .grid {
+    .layout {
       display: grid;
-      grid-template-columns: minmax(0, 1.6fr) minmax(280px, 0.9fr);
+      grid-template-columns: minmax(0, 1.55fr) minmax(290px, 0.85fr);
       gap: 22px;
     }
 
-    .card {
-      padding: 26px;
-      border-radius: 24px;
-      background: linear-gradient(180deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
-      border: 1px solid rgba(255,255,255,0.12);
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
+    .panel {
+      padding: 24px;
       animation: fadeUp 1s ease both;
     }
 
-    .card h2 {
+    .panel h2 {
       margin: 0 0 16px;
-      font-size: 1.25rem;
+      font-size: 1.2rem;
       letter-spacing: -0.03em;
     }
 
-    .post {
-      padding: 20px;
-      border-radius: 18px;
+    .login-box,
+    .composer,
+    .post-card,
+    .info-box {
       background: rgba(255,255,255,0.05);
       border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 18px;
+    }
+
+    .login-box,
+    .composer {
+      padding: 18px;
       margin-bottom: 16px;
+    }
+
+    label {
+      display: block;
+      font-size: 0.92rem;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+    input,
+    textarea {
+      width: 100%;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(5,8,22,0.65);
+      color: var(--text);
+      border-radius: 14px;
+      padding: 14px 15px;
+      font: inherit;
+      outline: none;
+      transition: border-color 180ms ease, transform 180ms ease;
+    }
+
+    input:focus,
+    textarea:focus {
+      border-color: rgba(34,211,238,0.7);
+      transform: translateY(-1px);
+    }
+
+    textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
+
+    .row {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      margin-top: 12px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 12px 16px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.14);
+      text-decoration: none;
+      color: var(--text);
+      background: rgba(255,255,255,0.06);
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 180ms ease, border-color 180ms ease, background 180ms ease;
+    }
+
+    .btn.primary {
+      background: linear-gradient(135deg, rgba(124,58,237,0.85), rgba(34,211,238,0.78));
+      box-shadow: 0 10px 30px rgba(64, 70, 229, 0.28);
+      border: none;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      border-color: rgba(255,255,255,0.22);
+    }
+
+    .status {
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .posts {
+      display: grid;
+      gap: 14px;
+      margin-top: 12px;
+    }
+
+    .post-card {
+      padding: 18px;
       transition: transform 180ms ease, background 180ms ease;
     }
 
-    .post:hover {
+    .post-card:hover {
       transform: translateY(-3px);
       background: rgba(255,255,255,0.07);
     }
 
-    .post:last-child {
-      margin-bottom: 0;
+    .post-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: baseline;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
     }
 
-    .post .date {
+    .username {
+      font-weight: 700;
+      font-size: 1rem;
+    }
+
+    .timestamp {
       color: var(--muted);
-      font-size: 0.9rem;
-      margin-bottom: 8px;
-      display: block;
+      font-size: 0.85rem;
     }
 
-    .post h3 {
-      margin: 0 0 10px;
-      font-size: 1.1rem;
+    .message {
+      line-height: 1.75;
+      color: #dbe3ff;
+      white-space: pre-wrap;
+      word-break: break-word;
     }
 
-    .post p {
-      margin: 0;
-      line-height: 1.7;
-      color: #d3d9f5;
-    }
-
-    .side-list {
+    .info-stack {
       display: grid;
       gap: 14px;
     }
 
-    .side-item {
+    .info-box {
       padding: 16px;
-      border-radius: 16px;
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.08);
     }
 
-    .side-item span {
+    .info-box span {
       display: block;
       color: var(--muted);
       font-size: 0.85rem;
       margin-bottom: 6px;
     }
 
-    .side-item strong {
-      font-size: 1rem;
-    }
-
-    .writeup {
-      line-height: 1.8;
-      color: #dce2ff;
-    }
-
-    .writeup p {
-      margin-top: 0;
-      margin-bottom: 16px;
-    }
-
-    .note {
-      font-size: 0.95rem;
+    .empty {
+      text-align: center;
       color: var(--muted);
+      padding: 22px;
+      border-radius: 18px;
+      border: 1px dashed rgba(255,255,255,0.16);
+      background: rgba(255,255,255,0.03);
+    }
+
+    .tiny {
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.7;
     }
 
     @keyframes shimmer {
@@ -281,14 +358,14 @@
       to { transform: translate3d(42px, 42px, 0); }
     }
 
-    @media (max-width: 900px) {
-      .grid {
+    @media (max-width: 920px) {
+      .layout {
         grid-template-columns: 1fr;
       }
 
       .hero,
-      .card {
-        padding: 22px;
+      .panel {
+        padding: 20px;
       }
     }
   </style>
@@ -304,65 +381,57 @@
     </div>
 
     <section class="hero">
-      <h1><span class="gradient-text">personal blog</span></h1>
+      <h1><span class="gradient-text">message board</span></h1>
       <p class="subtitle">
-        Random thoughts, updates, projects, and whatever else I feel like dropping here.
+        Drop a message, leave a thought, or just say hi. Pick a username first, then post. Everything here is front-end only and meant for a lightweight GitHub Pages setup.
       </p>
     </section>
 
-    <section class="grid">
-      <div class="card">
-        <h2>latest posts</h2>
+    <section class="layout">
+      <div class="panel">
+        <h2>post something</h2>
 
-        <article class="post">
-          <span class="date">April 2026</span>
-          <h3>first post</h3>
-          <p>
-            Finally got this site up and running. Wanted something simple, animated, and clean without looking boring. This blog page is where I’ll throw updates, ideas, and anything I’m working on.
-          </p>
-        </article>
+        <div class="login-box">
+          <label for="username">username</label>
+          <input id="username" type="text" maxlength="24" placeholder="enter a username" />
+          <div class="row">
+            <button class="btn" id="saveUserBtn">save username</button>
+            <span class="status" id="userStatus">no username set yet</span>
+          </div>
+        </div>
 
-        <article class="post">
-          <span class="date">April 2026</span>
-          <h3>what i’m into right now</h3>
-          <p>
-            Lately I’ve been messing with design ideas, personal site stuff, and making pages feel more alive with motion and reactive backgrounds. Small details make a site feel way better.
-          </p>
-        </article>
+        <div class="composer">
+          <label for="message">message</label>
+          <textarea id="message" maxlength="500" placeholder="type your message here..."></textarea>
+          <div class="row">
+            <button class="btn primary" id="postBtn">post message</button>
+            <button class="btn" id="clearBtn">clear board</button>
+            <span class="status" id="postStatus">messages are saved in your browser</span>
+          </div>
+        </div>
 
-        <article class="post">
-          <span class="date">April 2026</span>
-          <h3>more soon</h3>
-          <p>
-            This is just the start. I’ll probably expand this into a real blog later with more posts, categories, and a better layout.
-          </p>
-        </article>
+        <div class="posts" id="posts"></div>
       </div>
 
-      <aside class="card">
-        <h2>about this page</h2>
-        <div class="side-list">
-          <div class="side-item">
-            <span>owner</span>
-            <strong>re1gn</strong>
+      <aside class="panel">
+        <h2>board info</h2>
+        <div class="info-stack">
+          <div class="info-box">
+            <span>steam</span>
+            <a href="https://steamcommunity.com/profiles/76561199002722701/" target="_blank" style="color:var(--text); text-decoration:none; font-weight:700;">visit profile</a>
           </div>
-          <div class="side-item">
+          <div class="info-box">
             <span>discord</span>
             <strong>itsre1gning</strong>
           </div>
-          <a class="side-item" href="https://steamcommunity.com/profiles/76561199002722701/" target="_blank" style="text-decoration:none; color:inherit;">
-            <span>steam</span>
-            <strong>open profile</strong>
-          </a>
-        </div>
-
-        <div class="writeup" style="margin-top: 22px;">
-          <p>
-            You can edit this page however you want later. Just replace these sample posts with your own text or add more cards and sections.
-          </p>
-          <p class="note">
-            Since this is GitHub Pages, the password prompt on the home page is only cosmetic and not real protection.
-          </p>
+          <div class="info-box">
+            <span>how it works</span>
+            <div class="tiny">This version works on GitHub Pages with no backend. Posts are stored with localStorage, so they persist on the same browser and device, but they are not shared globally with everyone on the internet.</div>
+          </div>
+          <div class="info-box">
+            <span>real public board?</span>
+            <div class="tiny">For a true shared board, you’d need a backend like Firebase, Supabase, or a small server API.</div>
+          </div>
         </div>
       </aside>
     </section>
@@ -371,13 +440,116 @@
   <script>
     const canvas = document.getElementById('bg');
     const ctx = canvas.getContext('2d');
+    const postsEl = document.getElementById('posts');
+    const usernameEl = document.getElementById('username');
+    const messageEl = document.getElementById('message');
+    const userStatusEl = document.getElementById('userStatus');
+    const postStatusEl = document.getElementById('postStatus');
+    const saveUserBtn = document.getElementById('saveUserBtn');
+    const postBtn = document.getElementById('postBtn');
+    const clearBtn = document.getElementById('clearBtn');
+
+    const STORAGE_KEY = 're1gn_message_board_posts';
+    const USER_KEY = 're1gn_message_board_username';
+
+    function escapeHtml(text) {
+      return text
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    function getPosts() {
+      try {
+        return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+      } catch {
+        return [];
+      }
+    }
+
+    function savePosts(posts) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(posts));
+    }
+
+    function renderPosts() {
+      const posts = getPosts().slice().reverse();
+      if (!posts.length) {
+        postsEl.innerHTML = '<div class="empty">no posts yet. be the first one.</div>';
+        return;
+      }
+
+      postsEl.innerHTML = posts.map((post) => `
+        <article class="post-card">
+          <div class="post-head">
+            <div class="username">@${escapeHtml(post.username)}</div>
+            <div class="timestamp">${escapeHtml(post.time)}</div>
+          </div>
+          <div class="message">${escapeHtml(post.message)}</div>
+        </article>
+      `).join('');
+    }
+
+    function updateUserStatus() {
+      const savedUser = localStorage.getItem(USER_KEY);
+      if (savedUser) {
+        usernameEl.value = savedUser;
+        userStatusEl.textContent = `posting as @${savedUser}`;
+      } else {
+        userStatusEl.textContent = 'no username set yet';
+      }
+    }
+
+    saveUserBtn.addEventListener('click', () => {
+      const name = usernameEl.value.trim();
+      if (!name) {
+        userStatusEl.textContent = 'enter a username first';
+        return;
+      }
+      localStorage.setItem(USER_KEY, name.slice(0, 24));
+      updateUserStatus();
+      postStatusEl.textContent = 'username saved';
+    });
+
+    postBtn.addEventListener('click', () => {
+      const username = (localStorage.getItem(USER_KEY) || usernameEl.value).trim();
+      const message = messageEl.value.trim();
+
+      if (!username) {
+        postStatusEl.textContent = 'set a username before posting';
+        return;
+      }
+
+      if (!message) {
+        postStatusEl.textContent = 'type a message first';
+        return;
+      }
+
+      localStorage.setItem(USER_KEY, username.slice(0, 24));
+      const posts = getPosts();
+      posts.push({
+        username: username.slice(0, 24),
+        message: message.slice(0, 500),
+        time: new Date().toLocaleString()
+      });
+      savePosts(posts);
+      messageEl.value = '';
+      updateUserStatus();
+      renderPosts();
+      postStatusEl.textContent = 'message posted';
+    });
+
+    clearBtn.addEventListener('click', () => {
+      const confirmed = confirm('Clear all saved messages on this browser?');
+      if (!confirmed) return;
+      localStorage.removeItem(STORAGE_KEY);
+      renderPosts();
+      postStatusEl.textContent = 'board cleared on this browser';
+    });
 
     let particles = [];
-    const pointer = {
-      x: window.innerWidth / 2,
-      y: window.innerHeight / 2,
-      radius: 150
-    };
+    const pointer = { x: window.innerWidth / 2, y: window.innerHeight / 2, radius: 150 };
 
     function resize() {
       canvas.width = window.innerWidth * devicePixelRatio;
@@ -423,31 +595,23 @@
     function animate() {
       ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
       drawGlow();
-
       for (let i = 0; i < particles.length; i++) {
         const p = particles[i];
         p.x += p.vx;
         p.y += p.vy;
-
         if (p.x < 0 || p.x > window.innerWidth) p.vx *= -1;
         if (p.y < 0 || p.y > Math.max(window.innerHeight, document.body.scrollHeight)) p.vy *= -1;
-
         const dx = pointer.x - p.x;
         const dy = pointer.y - p.y;
         const d = Math.sqrt(dx * dx + dy * dy);
-
         if (d < pointer.radius) {
           p.x -= dx * 0.006;
           p.y -= dy * 0.006;
         }
-
         ctx.beginPath();
-        ctx.fillStyle = d < pointer.radius
-          ? 'rgba(255,255,255,0.95)'
-          : 'rgba(173, 194, 255, 0.72)';
+        ctx.fillStyle = d < pointer.radius ? 'rgba(255,255,255,0.95)' : 'rgba(173, 194, 255, 0.72)';
         ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
         ctx.fill();
-
         for (let j = i + 1; j < particles.length; j++) {
           const q = particles[j];
           const qx = p.x - q.x;
@@ -456,7 +620,6 @@
           connect(p, q, dist);
         }
       }
-
       requestAnimationFrame(animate);
     }
 
@@ -473,10 +636,8 @@
     }, { passive: true });
 
     window.addEventListener('resize', resize);
-    window.addEventListener('scroll', () => {
-      pointer.y = Math.min(pointer.y, window.scrollY + window.innerHeight);
-    }, { passive: true });
-
+    updateUserStatus();
+    renderPosts();
     resize();
     animate();
   </script>

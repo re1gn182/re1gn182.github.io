@@ -358,12 +358,11 @@
       <h1><span class="gradient-text">re1gn</span></h1>
 
       <p class="subtitle">
-        Building cool things, breaking boring ones, and turning ideas into something that actually feels alive.
-        Welcome to my corner of the internet.
+       Welcome to my side project landing page, my site is a little ram hungry sorry lol
       </p>
 
       <div class="actions">
-        <a class="btn primary" href="#">Enter Site</a>
+        <a class="btn primary" href="#" onclick="enterSite(event)">Enter Site</a>
         <a class="btn secondary" href="https://github.com/re1gn182" target="_blank">View Projects</a>
       </div>
 
@@ -502,6 +501,9 @@
 
     resize();
     animate();
-  </script>
+  function enterSite(e) {
+      e.preventDefault();
+      const password = prompt("Enter password to access blog:");
+      if (password === "!124321889078sxz#@$#") {
 </body>
 </html>

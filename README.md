@@ -1,4 +1,4 @@
-# re1gn Jekyll site
+# re1gn Jekyll site explained
 
 A simple Jekyll blog starter for GitHub Pages.
 
@@ -34,4 +34,4 @@ Write here in Markdown.
 
 ## Deploy to GitHub Pages
 
-If you're using GitHub Pages with Jekyll support, push the files to your repo root.
+If you're using GitHub Pages with Jekyll support, push the files to your repo root or just make a file in the "Pages" folder.

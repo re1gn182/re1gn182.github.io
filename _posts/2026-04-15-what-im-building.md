@@ -11,6 +11,6 @@ Right now I’m focused on a mix of cybersecurity, Linux, and web projects.
 - security labs and writeups
 - Linux/server work
 - web redesigns and personal site cleanup
-- infrastructure projects that are actually fun to document
+- infrastructure projects that are actually "fun" to document
 
-I wanted the site to be simple to update, which is why Jekyll makes way more sense than managing every page by hand.
+I wanted the site to be simple to update, which is why Jekyll makes way more sense than managing every page by hand / html.

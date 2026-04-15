@@ -3,734 +3,432 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>re1gn | message board</title>
+  <title>re1gn | About Me</title>
   <style>
     :root {
-      --bg: #050816;
-      --bg-soft: #0a1024;
+      --bg: #090b10;
+      --panel: rgba(16, 20, 30, 0.78);
+      --panel-strong: rgba(22, 27, 40, 0.92);
       --text: #eef2ff;
-      --muted: #9aa4c7;
-      --accent: #7c3aed;
-      --accent-2: #22d3ee;
-      --border: rgba(255,255,255,0.14);
-      --shadow: 0 20px 60px rgba(0,0,0,0.35);
-      --danger: #ff6b81;
-      --ok: #7ef29a;
+      --muted: #a9b3c9;
+      --accent: #6ee7ff;
+      --accent-2: #8b5cf6;
+      --border: rgba(255, 255, 255, 0.08);
+      --glow: 0 0 40px rgba(110, 231, 255, 0.12);
     }
 
-    * { box-sizing: border-box; }
-
-    html, body {
+    * {
+      box-sizing: border-box;
       margin: 0;
-      min-height: 100%;
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      color: var(--text);
-      background:
-        radial-gradient(circle at 20% 20%, rgba(124, 58, 237, 0.18), transparent 28%),
-        radial-gradient(circle at 80% 30%, rgba(34, 211, 238, 0.15), transparent 32%),
-        radial-gradient(circle at 50% 80%, rgba(59, 130, 246, 0.12), transparent 30%),
-        linear-gradient(135deg, var(--bg), #04050d 45%, var(--bg-soft));
-      overflow-x: hidden;
+      padding: 0;
     }
 
-    body::before {
-      content: "";
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(139, 92, 246, 0.18), transparent 30%),
+        radial-gradient(circle at top right, rgba(110, 231, 255, 0.12), transparent 28%),
+        linear-gradient(180deg, #07090d 0%, #0d111a 100%);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+
+    .grid {
       position: fixed;
       inset: 0;
       background-image:
         linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
         linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
-      background-size: 42px 42px;
-      mask-image: radial-gradient(circle at center, black 35%, transparent 85%);
+      background-size: 32px 32px;
+      mask-image: linear-gradient(to bottom, rgba(0,0,0,0.7), transparent 95%);
       pointer-events: none;
-      animation: driftGrid 16s linear infinite;
-      opacity: 0.45;
-      z-index: 0;
     }
 
-    canvas {
-      position: fixed;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      display: block;
-      z-index: 0;
-    }
-
-    .noise {
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      z-index: 1;
-      opacity: 0.04;
-      mix-blend-mode: soft-light;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140' viewBox='0 0 140 140'%3E%3Cg fill='%23ffffff' fill-opacity='1'%3E%3Ccircle cx='10' cy='18' r='1'/%3E%3Ccircle cx='38' cy='55' r='1'/%3E%3Ccircle cx='72' cy='12' r='1'/%3E%3Ccircle cx='115' cy='30' r='1'/%3E%3Ccircle cx='84' cy='84' r='1'/%3E%3Ccircle cx='22' cy='101' r='1'/%3E%3Ccircle cx='125' cy='110' r='1'/%3E%3Ccircle cx='55' cy='130' r='1'/%3E%3C/g%3E%3C/svg%3E");
-    }
-
-    .wrap {
-      position: relative;
-      z-index: 2;
-      width: min(1120px, calc(100% - 32px));
+    .container {
+      width: min(1120px, calc(100% - 2rem));
       margin: 0 auto;
-      padding: 32px 0 48px;
-    }
-
-    .topbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 16px;
-      margin-bottom: 22px;
-      animation: fadeUp 0.9s ease both;
-    }
-
-    .brand {
-      color: var(--text);
-      text-decoration: none;
-      font-weight: 700;
-      letter-spacing: 0.05em;
-    }
-
-    .home-btn,
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      padding: 12px 16px;
-      border-radius: 14px;
-      border: 1px solid rgba(255,255,255,0.14);
-      background: rgba(255,255,255,0.06);
-      color: var(--text);
-      text-decoration: none;
-      font-weight: 600;
-      transition: transform 180ms ease, border-color 180ms ease, background 180ms ease;
-      cursor: pointer;
-    }
-
-    .home-btn:hover,
-    .btn:hover {
-      transform: translateY(-2px);
-      border-color: rgba(255,255,255,0.22);
-      background: rgba(255,255,255,0.09);
-    }
-
-    .btn.primary {
-      background: linear-gradient(135deg, rgba(124,58,237,0.85), rgba(34,211,238,0.78));
-      box-shadow: 0 10px 30px rgba(64, 70, 229, 0.28);
-      border: none;
-    }
-
-    .hero,
-    .panel {
-      border-radius: 28px;
-      background: linear-gradient(180deg, rgba(255,255,255,0.12), rgba(255,255,255,0.06));
-      border: 1px solid var(--border);
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
     }
 
     .hero {
-      padding: 34px;
-      margin-bottom: 22px;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding: 4rem 0 3rem;
       position: relative;
-      overflow: hidden;
-      animation: fadeUp 1s 0.1s ease both;
     }
 
-    .hero::before {
+    .hero-card {
+      width: 100%;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      backdrop-filter: blur(16px);
+      border-radius: 28px;
+      box-shadow: var(--glow);
+      padding: clamp(1.5rem, 4vw, 4rem);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .hero-card::before {
       content: "";
       position: absolute;
-      inset: -2px;
-      background: conic-gradient(from 180deg at 50% 50%, transparent, rgba(124,58,237,0.45), rgba(34,211,238,0.32), transparent 70%);
-      filter: blur(22px);
-      opacity: 0.7;
-      z-index: -1;
-      animation: spinGlow 10s linear infinite;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(110, 231, 255, 0.08), transparent 30%, rgba(139, 92, 246, 0.08));
+      pointer-events: none;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 0.9rem;
+      border-radius: 999px;
+      background: rgba(110, 231, 255, 0.08);
+      border: 1px solid rgba(110, 231, 255, 0.18);
+      color: var(--accent);
+      font-size: 0.9rem;
+      letter-spacing: 0.04em;
+      margin-bottom: 1.25rem;
     }
 
     h1 {
-      margin: 0 0 14px;
-      font-size: clamp(2.6rem, 8vw, 5.8rem);
+      font-size: clamp(3rem, 8vw, 6.5rem);
       line-height: 0.95;
       letter-spacing: -0.06em;
+      margin-bottom: 1rem;
     }
 
-    .gradient-text {
-      display: inline-block;
-      background: linear-gradient(90deg, #ffffff 0%, #b8c0ff 28%, #7c3aed 52%, #22d3ee 78%, #ffffff 100%);
-      background-size: 240% 100%;
-      color: transparent;
+    .accent {
+      background: linear-gradient(90deg, var(--accent), #c4b5fd);
       -webkit-background-clip: text;
       background-clip: text;
-      animation: shimmer 5s linear infinite;
+      color: transparent;
     }
 
-    .subtitle {
-      max-width: 780px;
-      font-size: 1.05rem;
-      line-height: 1.75;
+    .lead {
+      max-width: 760px;
+      font-size: clamp(1.05rem, 2vw, 1.25rem);
       color: var(--muted);
-      margin: 0;
+      margin-bottom: 2rem;
     }
 
-    .layout {
-      display: grid;
-      grid-template-columns: minmax(0, 1.55fr) minmax(290px, 0.85fr);
-      gap: 22px;
-    }
-
-    .panel {
-      padding: 24px;
-      animation: fadeUp 1s ease both;
-    }
-
-    .panel h2 {
-      margin: 0 0 16px;
-      font-size: 1.2rem;
-      letter-spacing: -0.03em;
-    }
-
-    .login-box,
-    .composer,
-    .post-card,
-    .info-box,
-    .mod-box {
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 18px;
-    }
-
-    .login-box,
-    .composer,
-    .mod-box {
-      padding: 18px;
-      margin-bottom: 16px;
-    }
-
-    label {
-      display: block;
-      font-size: 0.92rem;
-      color: var(--muted);
-      margin-bottom: 8px;
-    }
-
-    input,
-    textarea {
-      width: 100%;
-      border: 1px solid rgba(255,255,255,0.12);
-      background: rgba(5,8,22,0.65);
-      color: var(--text);
-      border-radius: 14px;
-      padding: 14px 15px;
-      font: inherit;
-      outline: none;
-      transition: border-color 180ms ease, transform 180ms ease;
-    }
-
-    input:focus,
-    textarea:focus {
-      border-color: rgba(34,211,238,0.7);
-      transform: translateY(-1px);
-    }
-
-    textarea {
-      min-height: 120px;
-      resize: vertical;
-    }
-
-    .row {
+    .hero-actions {
       display: flex;
-      gap: 12px;
-      align-items: center;
-      margin-top: 12px;
       flex-wrap: wrap;
+      gap: 0.9rem;
+      margin-bottom: 2.5rem;
     }
 
-    .status {
+    .btn {
+      text-decoration: none;
+      border-radius: 14px;
+      padding: 0.9rem 1.2rem;
+      font-weight: 700;
+      transition: 0.25s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.55rem;
+    }
+
+    .btn-primary {
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      color: #071018;
+    }
+
+    .btn-secondary {
+      color: var(--text);
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.04);
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 30px rgba(0,0,0,0.25);
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1rem;
+    }
+
+    .stat {
+      background: rgba(255,255,255,0.035);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 1.2rem;
+    }
+
+    .stat h2 {
+      font-size: 1.8rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .stat p {
       color: var(--muted);
       font-size: 0.95rem;
     }
 
-    .posts {
+    section {
+      padding: 2rem 0 5rem;
+    }
+
+    .section-title {
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      margin-bottom: 0.75rem;
+      letter-spacing: -0.04em;
+    }
+
+    .section-copy {
+      color: var(--muted);
+      max-width: 740px;
+      margin-bottom: 2rem;
+    }
+
+    .cards {
       display: grid;
-      gap: 14px;
-      margin-top: 12px;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1rem;
     }
 
-    .post-card {
-      padding: 18px;
-      transition: transform 180ms ease, background 180ms ease;
-      position: relative;
+    .card {
+      background: var(--panel-strong);
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      padding: 1.35rem;
+      transition: 0.25s ease;
     }
 
-    .post-card:hover {
-      transform: translateY(-3px);
-      background: rgba(255,255,255,0.07);
+    .card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(110, 231, 255, 0.18);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
     }
 
-    .post-head {
-      display: flex;
-      justify-content: space-between;
-      gap: 12px;
-      align-items: baseline;
-      margin-bottom: 10px;
-      flex-wrap: wrap;
+    .card h3 {
+      font-size: 1.1rem;
+      margin-bottom: 0.7rem;
     }
 
-    .username {
-      font-weight: 700;
-      font-size: 1rem;
-    }
-
-    .timestamp {
+    .card p,
+    .card li {
       color: var(--muted);
-      font-size: 0.85rem;
+      font-size: 0.97rem;
     }
 
-    .message {
-      line-height: 1.75;
-      color: #dbe3ff;
-      white-space: pre-wrap;
-      word-break: break-word;
-      padding-right: 56px;
-    }
-
-    .delete-btn {
-      position: absolute;
-      top: 14px;
-      right: 14px;
-      border: 1px solid rgba(255,255,255,0.12);
-      background: rgba(255,255,255,0.06);
-      color: var(--danger);
-      border-radius: 12px;
-      padding: 8px 10px;
-      cursor: pointer;
-      display: none;
-    }
-
-    .delete-btn:hover {
-      background: rgba(255,107,129,0.12);
-    }
-
-    .is-owner .delete-btn {
-      display: inline-flex;
-    }
-
-    .info-stack {
+    .card ul {
+      padding-left: 1rem;
       display: grid;
-      gap: 14px;
+      gap: 0.45rem;
     }
 
-    .info-box {
-      padding: 16px;
+    .timeline {
+      display: grid;
+      gap: 1rem;
     }
 
-    .info-box span {
-      display: block;
-      color: var(--muted);
-      font-size: 0.85rem;
-      margin-bottom: 6px;
+    .timeline-item {
+      background: var(--panel-strong);
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      padding: 1.35rem;
     }
 
-    .empty {
-      text-align: center;
-      color: var(--muted);
-      padding: 22px;
-      border-radius: 18px;
-      border: 1px dashed rgba(255,255,255,0.16);
-      background: rgba(255,255,255,0.03);
-    }
-
-    .tiny {
-      color: var(--muted);
+    .timeline-item span {
+      display: inline-block;
+      color: var(--accent);
       font-size: 0.9rem;
-      line-height: 1.7;
+      margin-bottom: 0.55rem;
+      letter-spacing: 0.04em;
     }
 
-    .good { color: var(--ok); }
-    .bad { color: var(--danger); }
-
-    @keyframes shimmer {
-      0% { background-position: 0% 50%; }
-      100% { background-position: 240% 50%; }
+    footer {
+      padding: 0 0 3rem;
     }
 
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(18px); }
-      to { opacity: 1; transform: translateY(0); }
+    .footer-card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      padding: 1.4rem;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 1rem;
+      align-items: center;
     }
 
-    @keyframes spinGlow {
-      from { transform: rotate(0deg); }
-      to { transform: rotate(360deg); }
+    .footer-card p {
+      color: var(--muted);
     }
 
-    @keyframes driftGrid {
-      from { transform: translate3d(0, 0, 0); }
-      to { transform: translate3d(42px, 42px, 0); }
+    .footer-card a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 700;
     }
 
-    @media (max-width: 920px) {
-      .layout { grid-template-columns: 1fr; }
-      .hero, .panel { padding: 20px; }
-      .message { padding-right: 0; }
-      .delete-btn { position: static; margin-top: 12px; }
+    @media (max-width: 700px) {
+      .hero {
+        min-height: auto;
+        padding-top: 2rem;
+      }
+
+      .hero-card {
+        border-radius: 22px;
+      }
     }
   </style>
 </head>
 <body>
-  <canvas id="bg"></canvas>
-  <div class="noise"></div>
+  <div class="grid"></div>
 
-  <main class="wrap">
-    <div class="topbar">
-      <a class="brand" href="index.html">re1gn</a>
-      <a class="home-btn" href="index.html">Back Home</a>
-    </div>
-
+  <main>
     <section class="hero">
-      <h1><span class="gradient-text">message board</span></h1>
-      <p class="subtitle">
-        Real shared posts with Firebase. Pick a username, drop a message, and everyone visiting the page will see the same board.
-      </p>
-    </section>
+      <div class="container">
+        <div class="hero-card">
+          <div class="tag">about me / builder / security</div>
+          <h1>I'm <span class="accent">re1gn</span>.</h1>
+          <p class="lead">
+            I’m a cybersecurity-focused engineer who likes breaking things, figuring out why they broke, and then turning that into something stronger and more secure. Most of my work sits at the intersection of threat hunting, incident response, system hardening, and hands-on lab projects that actually do something instead of just looking good on paper.
+          </p>
 
-    <section class="layout">
-      <div class="panel">
-        <h2>post something</h2>
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="https://github.com/re1gn182" target="_blank" rel="noopener noreferrer">GitHub</a>
+            <a class="btn btn-secondary" href="https://re1gn182.github.io" target="_blank" rel="noopener noreferrer">re1gn182.github.io</a>
+          </div>
 
-        <div class="login-box">
-          <label for="username">username</label>
-          <input id="username" type="text" maxlength="24" placeholder="enter a username" />
-          <div class="row">
-            <button class="btn" id="saveUserBtn">save username</button>
-            <span class="status" id="userStatus">no username set yet</span>
+          <div class="stats">
+            <div class="stat">
+              <h2>CTF + NCL</h2>
+              <p>Built through competition, problem solving, and hands-on security work.</p>
+            </div>
+            <div class="stat">
+              <h2>Threat Hunting</h2>
+              <p>Focused on detection logic, attacker behavior, and practical response.</p>
+            </div>
+            <div class="stat">
+              <h2>Homelab Mindset</h2>
+              <p>Always building, testing, breaking, and improving systems.</p>
+            </div>
           </div>
         </div>
-
-        <div class="composer">
-          <label for="message">message</label>
-          <textarea id="message" maxlength="500" placeholder="type your message here..."></textarea>
-          <div class="row">
-            <button class="btn primary" id="postBtn">post message</button>
-            <span class="status" id="postStatus">connecting...</span>
-          </div>
-        </div>
-
-        <div class="posts" id="posts"></div>
       </div>
+    </section>
 
-      <aside class="panel">
-        <h2>board info</h2>
-        <div class="info-stack">
-          <div class="info-box">
-            <span>steam</span>
-            <a href="https://steamcommunity.com/profiles/76561199002722701/" target="_blank" style="color:var(--text); text-decoration:none; font-weight:700;">visit profile</a>
+    <section>
+      <div class="container">
+        <h2 class="section-title">What I work on</h2>
+        <p class="section-copy">
+          I’m most interested in real-world security work that goes beyond theory. That means investigating weird behavior, digging through logs, building better detections, hardening infrastructure, and understanding how attackers actually operate in Windows and Linux environments.
+        </p>
+
+        <div class="cards">
+          <article class="card">
+            <h3>Threat Hunting Playbook Development</h3>
+            <p>
+              One of the projects I’m proud of is developing a modular threat-hunting playbook designed around attacker behavior rather than one-off alerts. The goal was to make investigations faster, more consistent, and easier to scale across different types of suspicious activity.
+            </p>
+          </article>
+
+          <article class="card">
+            <h3>Detection Engineering</h3>
+            <p>
+              I’ve spent time building and refining dashboards and detections to surface suspicious PowerShell usage, strange login patterns, and potential beaconing activity. I like the process of turning noisy data into something actionable.
+            </p>
+          </article>
+
+          <article class="card">
+            <h3>Incident Response Mindset</h3>
+            <p>
+              I’m drawn to the technical side of response work: isolating impacted systems, collecting artifacts, tracing activity, and figuring out both what happened and what needs to change so it doesn’t happen again.
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="container">
+        <h2 class="section-title">Featured projects</h2>
+        <p class="section-copy">
+          These are the kinds of projects that represent how I like to learn and build: practical, technical, and grounded in real security workflows.
+        </p>
+
+        <div class="cards">
+          <article class="card">
+            <h3>Homemade Pentesting Machine</h3>
+            <ul>
+              <li>Built a dedicated BlackArch workstation for offensive security practice and lab work.</li>
+              <li>Set up encrypted storage and a workflow centered around repeatable tooling.</li>
+              <li>Used it for CTFs, exploitation practice, and sharpening hands-on tradecraft.</li>
+            </ul>
+          </article>
+
+          <article class="card">
+            <h3>National Cyber League</h3>
+            <ul>
+              <li>Competed across exploitation, forensics, cryptography, traffic analysis, and reverse engineering challenges.</li>
+              <li>Used competition environments to pressure-test technical skills under time constraints.</li>
+              <li>Focused on learning by doing, then carrying those lessons back into lab and project work.</li>
+            </ul>
+          </article>
+
+          <article class="card">
+            <h3>Security Labs and Hardening Projects</h3>
+            <ul>
+              <li>Worked on Linux and Windows server builds, web stacks, Active Directory projects, and system hardening labs.</li>
+              <li>Spent time with networking, logging, firewalls, authentication, and service configuration.</li>
+              <li>Approached each build like both an admin and an attacker to understand weak points.</li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="container">
+        <h2 class="section-title">How I build</h2>
+        <p class="section-copy">
+          I like projects that let me move between offensive and defensive thinking. That usually means building something functional first, understanding how it can fail, and then improving it with better visibility, stronger configs, and clearer response steps.
+        </p>
+
+        <div class="timeline">
+          <div class="timeline-item">
+            <span>01</span>
+            <h3>Start with the system</h3>
+            <p>I like understanding the environment first: how it’s configured, what it’s supposed to do, and what “normal” looks like.</p>
           </div>
-          <div class="info-box">
-            <span>discord</span>
-            <strong>itsre1gning</strong>
+          <div class="timeline-item">
+            <span>02</span>
+            <h3>Break down behavior</h3>
+            <p>Whether it’s attacker activity, suspicious network traffic, or misconfigured infrastructure, I focus on patterns and root cause instead of just surface symptoms.</p>
           </div>
-          <div class="mod-box">
-            <label for="ownerPassword">owner delete password</label>
-            <input id="ownerPassword" type="password" placeholder="enter owner password to delete posts" />
-            <div class="row">
-              <button class="btn" id="ownerLoginBtn">unlock delete</button>
-              <span class="status" id="ownerStatus">delete locked</span>
-            </div>
-          </div>
-          <div class="info-box">
-            <span>firebase setup</span>
-            <div class="tiny"> Work in progress</div>
-          </div>
-          <div class="info-box">
-            <span>firestore rules</span>
-            <div class="tiny">if you get the admin pw yall can delete whatever idrc</div>
+          <div class="timeline-item">
+            <span>03</span>
+            <h3>Turn findings into something useful</h3>
+            <p>The end goal is always something practical: a better detection, a cleaner process, a hardened system, or a stronger lab build.</p>
           </div>
         </div>
-      </aside>
+      </div>
     </section>
+
+    <footer>
+      <div class="container">
+        <div class="footer-card">
+          <div>
+            <h3>re1gn</h3>
+            <p>Cybersecurity projects, labs, detections, and whatever I’m building next.</p>
+          </div>
+          <a href="https://github.com/re1gn182" target="_blank" rel="noopener noreferrer">github.com/re1gn182</a>
+        </div>
+      </div>
+    </footer>
   </main>
-
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
-    import {
-      getFirestore,
-      collection,
-      addDoc,
-      deleteDoc,
-      doc,
-      serverTimestamp,
-      query,
-      orderBy,
-      onSnapshot
-    } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
-
-    const firebaseConfig = {
-      apiKey: "PASTE_YOUR_API_KEY",
-      authDomain: "PASTE_YOUR_AUTH_DOMAIN",
-      projectId: "PASTE_YOUR_PROJECT_ID",
-      storageBucket: "PASTE_YOUR_STORAGE_BUCKET",
-      messagingSenderId: "PASTE_YOUR_MESSAGING_SENDER_ID",
-      appId: "PASTE_YOUR_APP_ID"
-    };
-
-    const OWNER_PASSWORD = "!124321889078sxz#@$#";
-    const USER_KEY = "re1gn_firebase_username";
-    const OWNER_KEY = "re1gn_owner_mode";
-
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-
-    const postsEl = document.getElementById("posts");
-    const usernameEl = document.getElementById("username");
-    const messageEl = document.getElementById("message");
-    const userStatusEl = document.getElementById("userStatus");
-    const postStatusEl = document.getElementById("postStatus");
-    const saveUserBtn = document.getElementById("saveUserBtn");
-    const postBtn = document.getElementById("postBtn");
-    const ownerPasswordEl = document.getElementById("ownerPassword");
-    const ownerLoginBtn = document.getElementById("ownerLoginBtn");
-    const ownerStatusEl = document.getElementById("ownerStatus");
-
-    function escapeHtml(text) {
-      return String(text)
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/\"/g, "&quot;")
-        .replace(/'/g, "&#039;");
-    }
-
-    function updateUserStatus() {
-      const savedUser = localStorage.getItem(USER_KEY);
-      if (savedUser) {
-        usernameEl.value = savedUser;
-        userStatusEl.textContent = `posting as @${savedUser}`;
-      } else {
-        userStatusEl.textContent = "no username set yet";
-      }
-    }
-
-    function updateOwnerStatus() {
-      const ownerEnabled = localStorage.getItem(OWNER_KEY) === "true";
-      ownerStatusEl.textContent = ownerEnabled ? "delete unlocked" : "delete locked";
-      ownerStatusEl.className = `status ${ownerEnabled ? 'good' : ''}`;
-    }
-
-    function formatTime(timestamp) {
-      if (!timestamp?.toDate) return "just now";
-      return timestamp.toDate().toLocaleString();
-    }
-
-    function renderPosts(docs) {
-      const ownerEnabled = localStorage.getItem(OWNER_KEY) === "true";
-      if (!docs.length) {
-        postsEl.innerHTML = '<div class="empty">no posts yet. be the first one.</div>';
-        return;
-      }
-
-      postsEl.innerHTML = docs.map((item) => {
-        const data = item.data();
-        return `
-          <article class="post-card ${ownerEnabled ? 'is-owner' : ''}">
-            <div class="post-head">
-              <div class="username">@${escapeHtml(data.username || 'unknown')}</div>
-              <div class="timestamp">${escapeHtml(formatTime(data.createdAt))}</div>
-            </div>
-            <div class="message">${escapeHtml(data.message || '')}</div>
-            <button class="delete-btn" data-id="${item.id}">delete</button>
-          </article>
-        `;
-      }).join("");
-
-      if (ownerEnabled) {
-        document.querySelectorAll(".delete-btn").forEach((btn) => {
-          btn.addEventListener("click", async () => {
-            const postId = btn.dataset.id;
-            const sure = confirm("Delete this post?");
-            if (!sure) return;
-            try {
-              await deleteDoc(doc(db, "posts", postId));
-            } catch (error) {
-              postStatusEl.textContent = `delete failed: ${error.message}`;
-              postStatusEl.className = "status bad";
-            }
-          });
-        });
-      }
-    }
-
-    saveUserBtn.addEventListener("click", () => {
-      const name = usernameEl.value.trim().slice(0, 24);
-      if (!name) {
-        userStatusEl.textContent = "enter a username first";
-        return;
-      }
-      localStorage.setItem(USER_KEY, name);
-      updateUserStatus();
-      postStatusEl.textContent = "username saved";
-      postStatusEl.className = "status good";
-    });
-
-    ownerLoginBtn.addEventListener("click", () => {
-      const pw = ownerPasswordEl.value;
-      if (pw === OWNER_PASSWORD) {
-        localStorage.setItem(OWNER_KEY, "true");
-        ownerPasswordEl.value = "";
-        updateOwnerStatus();
-        postStatusEl.textContent = "owner delete unlocked";
-        postStatusEl.className = "status good";
-      } else {
-        localStorage.removeItem(OWNER_KEY);
-        updateOwnerStatus();
-        postStatusEl.textContent = "wrong owner password";
-        postStatusEl.className = "status bad";
-      }
-    });
-
-    postBtn.addEventListener("click", async () => {
-      const username = (localStorage.getItem(USER_KEY) || usernameEl.value).trim().slice(0, 24);
-      const message = messageEl.value.trim().slice(0, 500);
-
-      if (!username) {
-        postStatusEl.textContent = "set a username before posting";
-        postStatusEl.className = "status bad";
-        return;
-      }
-
-      if (!message) {
-        postStatusEl.textContent = "type a message first";
-        postStatusEl.className = "status bad";
-        return;
-      }
-
-      try {
-        localStorage.setItem(USER_KEY, username);
-        await addDoc(collection(db, "posts"), {
-          username,
-          message,
-          createdAt: serverTimestamp()
-        });
-        messageEl.value = "";
-        updateUserStatus();
-        postStatusEl.textContent = "message posted";
-        postStatusEl.className = "status good";
-      } catch (error) {
-        postStatusEl.textContent = `post failed: ${error.message}`;
-        postStatusEl.className = "status bad";
-      }
-    });
-
-    const q = query(collection(db, "posts"), orderBy("createdAt", "desc"));
-    onSnapshot(q, (snapshot) => {
-      renderPosts(snapshot.docs);
-      if (!snapshot.empty) {
-        postStatusEl.textContent = "connected to firebase";
-        postStatusEl.className = "status good";
-      }
-    }, (error) => {
-      postsEl.innerHTML = `<div class="empty">firebase error: ${escapeHtml(error.message)}</div>`;
-      postStatusEl.textContent = "firebase connection failed";
-      postStatusEl.className = "status bad";
-    });
-
-    updateUserStatus();
-    updateOwnerStatus();
-
-    const canvas = document.getElementById("bg");
-    const ctx = canvas.getContext("2d");
-    let particles = [];
-    const pointer = { x: window.innerWidth / 2, y: window.innerHeight / 2, radius: 150 };
-
-    function resize() {
-      canvas.width = window.innerWidth * devicePixelRatio;
-      canvas.height = window.innerHeight * devicePixelRatio;
-      canvas.style.width = window.innerWidth + "px";
-      canvas.style.height = window.innerHeight + "px";
-      ctx.setTransform(devicePixelRatio, 0, 0, devicePixelRatio, 0, 0);
-      createParticles();
-    }
-
-    function createParticles() {
-      const count = Math.min(100, Math.floor((window.innerWidth * window.innerHeight) / 15000));
-      particles = Array.from({ length: count }, () => ({
-        x: Math.random() * window.innerWidth,
-        y: Math.random() * Math.max(window.innerHeight, document.body.scrollHeight),
-        vx: (Math.random() - 0.5) * 0.35,
-        vy: (Math.random() - 0.5) * 0.35,
-        size: Math.random() * 2.2 + 0.8
-      }));
-    }
-
-    function connect(a, b, dist) {
-      if (dist > 120) return;
-      ctx.strokeStyle = `rgba(170, 190, 255, ${0.1 - dist / 1500})`;
-      ctx.lineWidth = 1;
-      ctx.beginPath();
-      ctx.moveTo(a.x, a.y);
-      ctx.lineTo(b.x, b.y);
-      ctx.stroke();
-    }
-
-    function drawGlow() {
-      const g = ctx.createRadialGradient(pointer.x, pointer.y, 0, pointer.x, pointer.y, 250);
-      g.addColorStop(0, "rgba(124, 58, 237, 0.16)");
-      g.addColorStop(0.45, "rgba(34, 211, 238, 0.1)");
-      g.addColorStop(1, "rgba(0, 0, 0, 0)");
-      ctx.fillStyle = g;
-      ctx.beginPath();
-      ctx.arc(pointer.x, pointer.y, 250, 0, Math.PI * 2);
-      ctx.fill();
-    }
-
-    function animate() {
-      ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
-      drawGlow();
-      for (let i = 0; i < particles.length; i++) {
-        const p = particles[i];
-        p.x += p.vx;
-        p.y += p.vy;
-        if (p.x < 0 || p.x > window.innerWidth) p.vx *= -1;
-        if (p.y < 0 || p.y > Math.max(window.innerHeight, document.body.scrollHeight)) p.vy *= -1;
-        const dx = pointer.x - p.x;
-        const dy = pointer.y - p.y;
-        const d = Math.sqrt(dx * dx + dy * dy);
-        if (d < pointer.radius) {
-          p.x -= dx * 0.006;
-          p.y -= dy * 0.006;
-        }
-        ctx.beginPath();
-        ctx.fillStyle = d < pointer.radius ? "rgba(255,255,255,0.95)" : "rgba(173, 194, 255, 0.72)";
-        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-        ctx.fill();
-        for (let j = i + 1; j < particles.length; j++) {
-          const q = particles[j];
-          const qx = p.x - q.x;
-          const qy = p.y - q.y;
-          const dist = Math.sqrt(qx * qx + qy * qy);
-          connect(p, q, dist);
-        }
-      }
-      requestAnimationFrame(animate);
-    }
-
-    window.addEventListener("mousemove", (e) => {
-      pointer.x = e.clientX;
-      pointer.y = e.clientY + window.scrollY;
-    });
-
-    window.addEventListener("touchmove", (e) => {
-      const touch = e.touches[0];
-      if (!touch) return;
-      pointer.x = touch.clientX;
-      pointer.y = touch.clientY + window.scrollY;
-    }, { passive: true });
-
-    window.addEventListener("resize", resize);
-    resize();
-    animate();
-  </script>
 </body>
 </html>
